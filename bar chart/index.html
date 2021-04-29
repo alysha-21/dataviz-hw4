@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <style>
+        .chart-container {
+            max-width: 1050px;
+            /* border: 3px solid red; */
+            margin: 0 auto;
+            /* auto centers the div */
+            font-family: Georgia, 'Times New Roman', Times, serif;
+        }
+
+        svg {
+            /* border: 2px solid purple; */
+            overflow: visible;
+        }
+
+
+        h1 {
+            border: 2px solid green;
+        }
+
+        h3 {
+            border: 2px solid blue
+        }
+
+     
+    </style>
+</head>
+
+<body>
+    <div class="chart-container">
+        <h1 class="headline">
+            More Than 3 Million Americans Lost Their Jobs Last Week. See Your State.
+        </h1>
+
+        <h3 class="leadin">
+            Official statistics have revealed how severely coronavirus has hurt the job market. But it may take several months before we know whether this economic disaster will resemble a storm or a long winter.
+        </h3>
+
+        <svg width="1050px" height="800px">
+
+        </svg>
+    </div>
+</body>
+
+<!-- add your script blocks at the end -->
+<script src="https://d3js.org/d3.v6.min.js"></script>
+
+<script>
+    console.log(d3)
+    let width = 850;
+    let height = 775;
+
+    let svg = d3.select("body").select("svg")
+
+    //console.log
+
+    //arrays
+    //objects
+    //functions
+
+    let margin = { top: 0, right: 0, bottom: 0, left: 0 };
+
+
+    d3.csv("nat.csv").then(function (data) {
+        console.log("loaded")
+        console.log({data})
+
+        data.forEach(d => {
+            d.value = +d.value
+            d.end = new Date(d.end)
+        })
+
+
+        let x = d3.scaleBand()
+            .domain(data.map(d => d["end"]))
+            // .paddingInner(.02)
+            .range([margin.left, width - margin.right])
+
+        let y = d3.scaleLinear()
+            .domain([0, d3.max(data.map(d => d.value))])
+            .range([height - margin.bottom, margin.top])
+
+
+        let yAxisSettings = d3.axisRight(y) //set axis to the right
+            .ticks(6) //approx how many ticks, the function will not necesarily give you that number
+            .tickSize(width) //size of tick lines
+            .tickPadding(10) //distance from tick labels to tick marks
+
+        let xAxisSettings = d3.axisBottom(x)
+            .tickSize(10)
+            // .tickFormat(d3.format(".0f")) //what format do you want https://github.com/d3/d3-format 
+            .tickPadding(5)
+
+        //adding to the axes to our chart
+        let xAxisTicks = svg.append("g")
+            .attr("class", "x axis") //give each axis a class
+            // .call(xAxisSettings)
+            .attr("transform", `translate(0,${height - margin.bottom})`)
+
+        let yAxisTicks = svg.append("g")
+            .attr("class", "y axis")
+            .call(yAxisSettings)
+            .attr("transform", `translate(${margin.right},0)`)
+
+        let bars = svg.append("g")
+            .attr("class", "bars")
+            .selectAll(".bar")
+            .data(data)
+            .join("rect")
+            .attr("class", "bar")
+            .attr("x", d => x(d.end))
+            .attr("width", x.bandwidth())
+            .attr("y", d => y(d.value))
+            .attr("height", d => y(0) - y(d.value))
+
+
+
+    })
+
+</script>
