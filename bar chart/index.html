@@ -19,11 +19,11 @@
 
 
         h1 {
-            border: 2px solid green;
+            /* border: 2px solid green; */
         }
 
         h3 {
-            border: 2px solid blue
+            /* border: 2px solid blue */
         }
 
         .x .tick line {
@@ -110,25 +110,26 @@
             .range([height - margin.bottom, margin.top])
 
 
+        let xAxisSettings = d3.axisBottom(x)
+            .tickSize(6)
+            .tickPadding(6)
+            .ticks(10) //I've tried so many tick settings, I don't know what I'm doing wrong!
+            // .tickSizeOuter(0)
+            .tickValues(['2002','2004','2006','2008','2010','2012','2014','2016','2018','2020'])
+            .tickFormat(d3.format(".0f"))
+
+        let xAxisTicks = svg.append("g")
+            .attr("class", "x axis") //give each axis a class
+            .call(xAxisSettings)
+            .call(g => g.selectAll(".domain").remove())
+            .attr("transform", `translate(0,${height - margin.bottom})`)
+
         let yAxisSettings = d3.axisRight(y) //set axis to the right
             .ticks(6) //approx how many ticks, the function will not necesarily give you that number
             .tickSize(width) //size of tick lines
             .tickPadding(10) //distance from tick labels to tick marks
 
         
-        let xAxisSettings = d3.axisBottom(x)
-            .ticks(10) //I've tried so many tick settings, I don't know what I'm doing wrong!
-            // .tickSizeOuter(0)
-            // .tickPadding(5)
-            .tickValues(['2002','2004','2006','2008','2010','2012','2014','2016','2018','2020'])
-
-
-        //adding to the axes to our chart
-        let xAxisTicks = svg.append("g")
-            .attr("class", "x axis") //give each axis a class
-            .call(xAxisSettings)
-            .attr("transform", `translate(0,${height - margin.bottom})`)
-
         let yAxisTicks = svg.append("g")
             .attr("class", "y axis")
             .call(yAxisSettings)
