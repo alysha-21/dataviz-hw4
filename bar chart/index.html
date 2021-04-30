@@ -26,6 +26,31 @@
             border: 2px solid blue
         }
 
+        .x .tick line {
+            stroke: rgba(0, 0, 0, .2);
+        }
+
+        .y .tick line {
+            stroke: rgba(0, 0, 0, .2);
+        }
+
+        .x .domain {
+            display: none;
+        }
+
+        .y .domain {
+            display: none;
+        }
+
+        .y .tick text {
+            font-size: 14px;
+            fill: #333;
+        }
+
+        .x .tick text {
+            font-size: 14px;
+            fill: #333;
+        }
      
     </style>
 </head>
@@ -51,7 +76,7 @@
 
 <script>
     console.log(d3)
-    let width = 850;
+    let width = 1050;
     let height = 775;
 
     let svg = d3.select("body").select("svg")
@@ -77,7 +102,7 @@
 
         let x = d3.scaleBand()
             .domain(data.map(d => d["end"]))
-            // .paddingInner(.02)
+            .paddingInner(.02)
             .range([margin.left, width - margin.right])
 
         let y = d3.scaleLinear()
@@ -90,21 +115,24 @@
             .tickSize(width) //size of tick lines
             .tickPadding(10) //distance from tick labels to tick marks
 
+        
         let xAxisSettings = d3.axisBottom(x)
-            .tickSize(10)
-            // .tickFormat(d3.format(".0f")) //what format do you want https://github.com/d3/d3-format 
-            .tickPadding(5)
+            .ticks(10) //I've tried so many tick settings, I don't know what I'm doing wrong!
+            // .tickSizeOuter(0)
+            // .tickPadding(5)
+            .tickValues(['2002','2004','2006','2008','2010','2012','2014','2016','2018','2020'])
+
 
         //adding to the axes to our chart
         let xAxisTicks = svg.append("g")
             .attr("class", "x axis") //give each axis a class
-            // .call(xAxisSettings)
+            .call(xAxisSettings)
             .attr("transform", `translate(0,${height - margin.bottom})`)
 
         let yAxisTicks = svg.append("g")
             .attr("class", "y axis")
             .call(yAxisSettings)
-            .attr("transform", `translate(${margin.right},0)`)
+            .attr("transform", `translate(${margin.left},0)`)
 
         let bars = svg.append("g")
             .attr("class", "bars")
@@ -116,6 +144,8 @@
             .attr("width", x.bandwidth())
             .attr("y", d => y(d.value))
             .attr("height", d => y(0) - y(d.value))
+            .attr("stroke","#ef6a17")
+
 
 
 
