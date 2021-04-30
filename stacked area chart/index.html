@@ -68,6 +68,12 @@
             max-width: 1000px;
             margin: 0 auto;
         }
+
+        .group-names {
+            font-family: 'Gotham SSm',Helvetica,Arial,sans-serif;
+            font-size: 16px;
+            color: grey;
+        }
     </style>
 </head>
 
@@ -77,10 +83,13 @@
             The Decline Of Farming And The Rise Of Everything Else
         </h1>
 
-        <svg width="1050px" height="575px">
+        <svg width="850" height="575px">
         </svg>
         <p class="source">Source: IPUMS-USA, University Of Minnesota</p>
         <p class="credit">Credit: Quoctrung Bui/NPR</p>
+       
+        <svg width="875" height="600px"></svg>
+        <p class=".group-names">Other</p>
 
     </div>
 </body>
@@ -91,7 +100,7 @@
 <script>
     console.log({ d3 })
 
-    let width = 800;
+    let width = 850;
     let height = 500;
 
     let svg = d3.select("body")
@@ -101,7 +110,7 @@
 
         console.log({data})
 
-        let margin = { top: 10, right: 10, bottom: 10, left: 30 };
+        let margin = { top: 30, right: 775, bottom: 10, left: 30 };
 
         let sel_cols = [
             "Other",
@@ -110,13 +119,12 @@
             "Blue Collar",
             "Farming"]
 
-
         let sel_colors = [
-            "#f2f2f2", // "Other" greys
+            "#d3d3d3", // "Other" greys
             "#de3fa1", // "White Collar", warm
             "#fed777", // "Service", ylorrd
-            "#63becb", // "Blue Collar", gnbu
-            "#9dd9ca" // "Farming", greens
+            "#2d9adf", // "Blue Collar", gnbu
+            "#57b990" // "Farming", greens
         ]
 
     // //     //https://github.com/d3/d3-shape#stacks
@@ -124,17 +132,17 @@
 
         console.log({seriesjobs})
 
-    // //     // https://github.com/d3/d3-scale#ordinal-scales
-    //     let color = d3.scaleOrdinal()
-    //         .domain(sel_cols)
-    //         .range(sel_colors)
+    //     // https://github.com/d3/d3-scale#ordinal-scales
+        let color = d3.scaleOrdinal()
+            .domain(sel_cols)
+            .range(sel_colors)
 
         let x = d3.scaleLinear()
             .domain(data.map(d => d["year"]))
-            .range([margin.left, width])
+            .range([margin.left, width - margin.right])
 
         let y = d3.scaleLinear()
-            .domain([0, 140,000,000])
+            .domain([0, 140000000])
             .range([height - margin.bottom, margin.top])
 
     // //     //https://github.com/d3/d3-shape#areas
@@ -147,7 +155,7 @@
             .tickSize(6)
             .tickPadding(6)
             .ticks(20)
-            // .tickValues([5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 95]) //
+            // .tickValues([1850, 1860, 1870, 1880, 1900, 1910, 1920, 1930, 1940, 1950, 1960, 1970, 1980, 1990, 2000, 2005, 2010]) //
             .tickFormat(d3.format(".0f"))
 
         let xAxis = svg.append("g")
@@ -170,59 +178,49 @@
             .call(yAxisSettings)
             .call(g => g.selectAll(".domain").remove())
 
-    // //     //labelling 
-    //     svg.append("g")
-    //         .selectAll("path")
-    //         .data(series2020)
-    //         .join("path")
-    //         .attr("class", d =>  {
-    //             console.log(d)
-    //             return d.key
-    //         })
-    //         .attr("fill", d => color(d.key))
-    //         .attr("d", area)
+    //     //labelling 
+        svg.append("g")
+            .selectAll("path")
+            .data(seriesjobs)
+            .join("path")
+            .attr("class", d =>  {
+                console.log({d})
+                return d.key
+            })
+            .attr("fill", d => color(d.key))
+            .attr("d", area)
     // //         .append("title")
 
-    //     svg.append("text")
-    //         .attr("class", "label")
-    //         .attr("x", 500)
-    //         .attr("y", 250)
-    //         .text("Employer")
+        // svg.append("text")
+        //     .attr("class", "label")
+        //     .attr("x", 625)
+        //     .attr("y", 490)
+        //     .text("Other")
 
-    //     svg.append("text")
-    //         .attr("class", "label")
-    //         .attr("x", 80)
-    //         .attr("y", 450)
-    //         .text("Medicaid")
-    //         .style("fill", "white")
+        svg.append("text")
+            .attr("class", "label")
+            .attr("x", 570)
+            .attr("y", 425)
+            .text("White Collar")
 
-    //     svg.append("text")
-    //         .attr("class", "label")
-    //         .attr("x", 40)
-    //         .attr("y", 300)
-    //         .text("Medicare")
-    //         .style("fill", "white")
+        svg.append("text")
+            .attr("class", "label")
+            .attr("x", 625)
+            .attr("y", 200)
+            .text("Services")
 
-    //     svg.append("text")
-    //         .attr("class", "axis-label")
-    //         .attr("x", width / 2)
-    //         .attr("y", height + 40)
-    //         .text("income percentile")
-    //         .attr("text-anchor", "middle") //text-anchor controls positioning for SVG text
+        svg.append("text")
+            .attr("class", "label")
+            .attr("x", 590)
+            .attr("y", 125)
+            .text("Blue Collar")
 
-    //     svg.append("text")
-    //         .attr("class", "axis-label")
-    //         .attr("x", width - 30)
-    //         .attr("y", height + 40)
-    //         .text("higher income")
-    //         .attr("text-anchor", "end")
+        svg.append("text")
+            .attr("class", "label")
+            .attr("x", 225)
+            .attr("y", 375)
+            .text("Farming")
 
-    //     svg.append("text")
-    //         .attr("class", "axis-label")
-    //         .attr("x", 30)
-    //         .attr("y", height + 40)
-    //         .text("lower income")
-    //         .attr("text-anchor", "start")
     })
 
 </script>
